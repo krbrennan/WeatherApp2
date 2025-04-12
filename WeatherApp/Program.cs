@@ -1,5 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// googles geocoding api key:
+// AIzaSyCaODk6-70vzIOmaWZ4nTZE6maPGq1nmjU
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -12,7 +15,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Weather API v1"));
-    app.UseSwaggerUI();
+    //app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
