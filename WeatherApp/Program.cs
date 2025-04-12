@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 
 
@@ -41,19 +42,21 @@ app.MapGet("/weatherforecast", async (string? location) => // Mark the lambda as
         return Results.BadRequest("Location (city name, zip code, or address) is required.");
     }
 
-    string locationType;
-    if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^\d{5}$"))
-    {
-        locationType = "Zip Code";
-    }
-    else if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^[a-zA-Z\s]+$"))
-    {
-        locationType = "City";
-    }
-    else
-    {
-        locationType = "Address";
-    }
+
+    // surprisingly, locationType isnt needed. google's geowhatever api can take in a range of input and automagically determines what the location type is
+    //string locationType;
+    //if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^\d{5}$"))
+    //{
+    //    locationType = "Zip Code";
+    //}
+    //else if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^[a-zA-Z\s]+$"))
+    //{
+    //    locationType = "City";
+    //}
+    //else
+    //{
+    //    locationType = "Address";
+    //}
 
     // google geocode api to get lat and long
     var geocodingService = new GeocodingService();
@@ -85,9 +88,31 @@ app.MapGet("/weatherforecast", async (string? location) => // Mark the lambda as
     var weatherApiResponseContent = await weatherApiResponse.Content.ReadAsStringAsync();
     Console.WriteLine($"Weather API Response: {weatherApiResponseContent}");
 
-  
+    try
+    {
+        var jsonDocument = JsonDocument.Parse(weatherApiResponseContent);
+        var data = jsonDocument.RootElement;
 
-    return Results.Ok(weatherApiResponseContent); // 'forecast' is now defined
+        var properties = data.GetProperty("properties");
+        var forecast = properties.GetProperty("forecast");
+        var forecastHourly = properties.GetProperty("forecastHourly");
+
+
+        return Results.Ok(new { Forecast = forecast, ForecastHourly = forecastHourly });
+    }
+    catch (JsonException ex)
+    {
+        Console.WriteLine($"Error parsing JSON: {ex.Message}");
+        return Results.Problem("Failed to parse weather API response as JSON.");
+    }
+
+
+
+
+
+
+
+    //return Results.Ok(document); // 'forecast' is now defined
 })
 .WithName("GetWeatherForecast") // Ensure this is part of the chain
 .WithOpenApi();
