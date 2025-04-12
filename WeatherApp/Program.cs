@@ -8,7 +8,8 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 // Access the API key from appsettings.json
-string apiKey = builder.Configuration["GoogleGeocoding:ApiKey"];
+//string apiKey = builder.Configuration["GoogleGeocoding:ApiKey"];
+builder.Configuration.AddEnvironmentVariables();
 
 
 // Add services to the container.
