@@ -30,33 +30,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//var summaries = new[]
-//{
-//    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-//};
-
 app.MapGet("/weatherforecast", async (string? location) => // Mark the lambda as async
 {
     if (string.IsNullOrWhiteSpace(location))
     {
         return Results.BadRequest("Location (city name, zip code, or address) is required.");
     }
-
-
-    // surprisingly, locationType isnt needed. google's geowhatever api can take in a range of input and automagically determines what the location type is
-    //string locationType;
-    //if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^\d{5}$"))
-    //{
-    //    locationType = "Zip Code";
-    //}
-    //else if (System.Text.RegularExpressions.Regex.IsMatch(location, @"^[a-zA-Z\s]+$"))
-    //{
-    //    locationType = "City";
-    //}
-    //else
-    //{
-    //    locationType = "Address";
-    //}
 
     // google geocode api to get lat and long
     var geocodingService = new GeocodingService();
@@ -105,14 +84,6 @@ app.MapGet("/weatherforecast", async (string? location) => // Mark the lambda as
         Console.WriteLine($"Error parsing JSON: {ex.Message}");
         return Results.Problem("Failed to parse weather API response as JSON.");
     }
-
-
-
-
-
-
-
-    //return Results.Ok(document); // 'forecast' is now defined
 })
 .WithName("GetWeatherForecast") // Ensure this is part of the chain
 .WithOpenApi();
@@ -122,7 +93,7 @@ app.MapGet("/test-geocoding", async () =>
 {
     var geocodingService = new GeocodingService();
     string testLocation = "1600 Amphitheatre Parkway, Mountain View, CA"; // Example address
-    string testApiKey = "AIzaSyCaODk6-70vzIOmaWZ4nTZE6maPGq1nmjU"; // Replace with your actual API key
+    string testApiKey = apiKey;
 
     try
     {
@@ -178,7 +149,7 @@ internal class GeocodingService
             httpClient.DefaultRequestHeaders.Add("User-Agent", "WeatherApp/1.0"); // Add User-Agent header
             //string googleApiKey = apiKey; // Replace with your actual Google API key
             //string requestUri = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(location)}&key={api}";
-            string requestUri = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(location)}&key=AIzaSyCaODk6-70vzIOmaWZ4nTZE6maPGq1nmjU";
+            string requestUri = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(location)}&key={api}";
 
 
             var response = await httpClient.GetAsync(requestUri);
@@ -206,12 +177,3 @@ internal class GeocodingService
         }
     }
 }
-
-
-
-//internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-//{
-//    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-//}
-
-
