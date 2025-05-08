@@ -12,4 +12,17 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+	<Target Name="CopyReactBuild" AfterTargets="Build">
+		<!-- Define the files to copy -->
+		<ItemGroup>
+			<ReactBuildFiles Include="client/build\**\*" />
+		</ItemGroup>
+		<!--  remove files if exist -->
+		<RemoveDir Directories="wwwroot" />
+
+		<!-- Copy the files to wwwroot -->
+		<Copy SourceFiles="@(ReactBuildFiles)" DestinationFolder="wwwroot\%(RecursiveDir)" />
+	</Target>
+
+
 </Project>

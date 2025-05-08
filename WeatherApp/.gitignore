@@ -1,2 +1,47 @@
 # .gitignore
 appsettings.Development.json
+
+# Build Folders
+bin/
+obj/
+
+# User-Specific Files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Temporary Files
+*.tmp
+*.temp
+*.cache
+*.pdb
+*.pid
+*.svclog
+
+# Visual Studio Specific
+.vscode/
+.vs/
+*.csproj.user
+
+# Dependency Directories
+packages/
+node_modules/
+
+# Configuration Files
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+appsettings.Staging.json
+
+# OS-Specific Files
+.DS_Store
+Thumbs.db
+
+# Other
+*.bak
+*.swp
+*.orig
